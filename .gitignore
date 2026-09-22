@@ -1,0 +1,33 @@
+# =========================
+# Backend - Spring Boot
+# =========================
+employee-management-backend/target/
+employee-management-backend/.mvn/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# =========================
+# Frontend - React / Vite
+# =========================
+employee-management-frontend/node_modules/
+employee-management-frontend/dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
