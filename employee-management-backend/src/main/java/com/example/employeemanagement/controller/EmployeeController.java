@@ -9,7 +9,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
-@CrossOrigin(origins = "http://localhost:5173")
+
+@CrossOrigin(origins = "https://employee-management-frontend-7k5p.onrender.com")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
