@@ -1,17 +1,20 @@
+```jsx
 import { useEffect, useState } from "react";
 import "./App.css";
 
-  
-const API_URL = "https://employee-management-backend-uvk9.onrender.com/api/employees";
+const API_URL =
+  "https://employee-management-backend-uvk9.onrender.com/api/employees";
 
 function App() {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [editingEmployeeId, setEditingEmployeeId] = useState(null);
 
   // SIDEBAR PAGE
   const [currentPage, setCurrentPage] = useState("dashboard");
+
+  // FORM
+  const [showForm, setShowForm] = useState(false);
+  const [editingEmployeeId, setEditingEmployeeId] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,7 +24,10 @@ function App() {
     salary: "",
   });
 
+  // ==============================
   // FETCH EMPLOYEES
+  // ==============================
+
   const fetchEmployees = async () => {
     try {
       const response = await fetch(API_URL);
@@ -33,8 +39,7 @@ function App() {
       const data = await response.json();
       setEmployees(data);
     } catch (error) {
-      console.error("Error fetching employees:", error);
-      alert("Could not load employees. Check if backend is running.");
+      console.error("Error loading employees:", error);
     }
   };
 
@@ -42,7 +47,10 @@ function App() {
     fetchEmployees();
   }, []);
 
-  // HANDLE INPUT CHANGE
+  // ==============================
+  // FORM INPUT
+  // ==============================
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -50,7 +58,10 @@ function App() {
     });
   };
 
-  // OPEN ADD EMPLOYEE FORM
+  // ==============================
+  // ADD EMPLOYEE
+  // ==============================
+
   const handleAddEmployee = () => {
     setEditingEmployeeId(null);
 
@@ -65,7 +76,10 @@ function App() {
     setShowForm(true);
   };
 
+  // ==============================
   // ADD / UPDATE EMPLOYEE
+  // ==============================
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -78,16 +92,17 @@ function App() {
       let response;
 
       if (editingEmployeeId !== null) {
-        // UPDATE
-        response = await fetch(`${API_URL}/${editingEmployeeId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(employeeData),
-        });
+        response = await fetch(
+          `${API_URL}/${editingEmployeeId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(employeeData),
+          }
+        );
       } else {
-        // ADD
         response = await fetch(API_URL, {
           method: "POST",
           headers: {
@@ -99,17 +114,17 @@ function App() {
 
       if (!response.ok) {
         throw new Error(
-            editingEmployeeId !== null
-                ? "Failed to update employee"
-                : "Failed to add employee"
+          editingEmployeeId !== null
+            ? "Failed to update employee"
+            : "Failed to add employee"
         );
       }
 
-      if (editingEmployeeId !== null) {
-        alert("Employee updated successfully!");
-      } else {
-        alert("Employee added successfully!");
-      }
+      alert(
+        editingEmployeeId !== null
+          ? "Employee updated successfully!"
+          : "Employee added successfully!"
+      );
 
       setFormData({
         name: "",
@@ -126,15 +141,18 @@ function App() {
     } catch (error) {
       console.error(error);
 
-      if (editingEmployeeId !== null) {
-        alert("Could not update employee. Check if backend is running.");
-      } else {
-        alert("Could not add employee. Check if backend is running.");
-      }
+      alert(
+        editingEmployeeId !== null
+          ? "Could not update employee. Check if backend is running."
+          : "Could not add employee. Check if backend is running."
+      );
     }
   };
 
+  // ==============================
   // EDIT EMPLOYEE
+  // ==============================
+
   const handleEdit = (employee) => {
     setFormData({
       name: employee.name || "",
@@ -146,15 +164,16 @@ function App() {
 
     setEditingEmployeeId(employee.id);
     setShowForm(true);
-
-    // Automatically go to Employees page
     setCurrentPage("employees");
   };
 
+  // ==============================
   // DELETE EMPLOYEE
+  // ==============================
+
   const handleDelete = async (employeeId) => {
     const confirmed = window.confirm(
-        "Are you sure you want to delete this employee?"
+      "Are you sure you want to delete this employee?"
     );
 
     if (!confirmed) {
@@ -162,9 +181,12 @@ function App() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/${employeeId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_URL}/${employeeId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete employee");
@@ -175,11 +197,17 @@ function App() {
       await fetchEmployees();
     } catch (error) {
       console.error("Error deleting employee:", error);
-      alert("Could not delete employee. Check if backend is running.");
+
+      alert(
+        "Could not delete employee. Check if backend is running."
+      );
     }
   };
 
+  // ==============================
   // CLOSE FORM
+  // ==============================
+
   const handleCloseForm = () => {
     setShowForm(false);
     setEditingEmployeeId(null);
@@ -193,895 +221,998 @@ function App() {
     });
   };
 
-  // SEARCH / FILTER
-  const filteredEmployees = employees.filter(
-      (employee) =>
-          employee.name?.toLowerCase().includes(search.toLowerCase()) ||
-          employee.email?.toLowerCase().includes(search.toLowerCase()) ||
-          employee.department?.toLowerCase().includes(search.toLowerCase())
-  );
+  // ==============================
+  // SEARCH
+  // ==============================
 
-  // DEPARTMENT DATA
+  const filteredEmployees = employees.filter((employee) => {
+    const searchText = search.toLowerCase();
+
+    return (
+      employee.name
+        ?.toLowerCase()
+        .includes(searchText) ||
+      employee.email
+        ?.toLowerCase()
+        .includes(searchText) ||
+      employee.department
+        ?.toLowerCase()
+        .includes(searchText)
+    );
+  });
+
+  // ==============================
+  // DEPARTMENTS
+  // ==============================
+
   const departments = [
     ...new Set(
-        employees
-            .map((employee) => employee.department)
-            .filter(Boolean)
+      employees
+        .map((employee) => employee.department)
+        .filter(Boolean)
     ),
   ];
 
+  // ==============================
   // AVERAGE SALARY
-  const averageSalary = employees.length
-      ? Math.round(
-          employees.reduce(
-              (total, employee) =>
-                  total + Number(employee.salary || 0),
-              0
-          ) / employees.length
-      )
+  // ==============================
+
+  const averageSalary =
+    employees.length > 0
+      ? employees.reduce(
+          (total, employee) =>
+            total + Number(employee.salary || 0),
+          0
+        ) / employees.length
       : 0;
 
-  // PAGE TITLES
-  const pageInfo = {
-    dashboard: {
-      title: "Employee Dashboard",
-      subtitle: "Manage your employees and organization.",
-    },
-    employees: {
-      title: "Employees",
-      subtitle: "View and manage your team members.",
-    },
-    departments: {
-      title: "Departments",
-      subtitle: "View your organization's departments.",
-    },
-    reports: {
-      title: "Reports",
-      subtitle: "View employee and salary reports.",
-    },
-    settings: {
-      title: "Settings",
-      subtitle: "Manage your application settings.",
-    },
+  // ==============================
+  // TOTAL SALARY
+  // ==============================
+
+  const totalSalary = employees.reduce(
+    (total, employee) =>
+      total + Number(employee.salary || 0),
+    0
+  );
+
+  // ==============================
+  // PAGE NAVIGATION
+  // ==============================
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    setShowForm(false);
+    setEditingEmployeeId(null);
   };
 
   return (
-      <div className="dashboard">
+    <div className="app">
 
-        {/* ================= SIDEBAR ================= */}
-        <aside className="sidebar">
+      {/* ==============================
+          BACKGROUND GLOW
+      ============================== */}
 
-          {/* LOGO */}
-          <div
-              className="logo"
-              onClick={() => {
-                setCurrentPage("dashboard");
-                setShowForm(false);
-              }}
-              style={{ cursor: "pointer" }}
-          >
-            <div className="logo-icon">EH</div>
-            <span>EMP HUB</span>
+      <div className="background-glow glow-one"></div>
+      <div className="background-glow glow-two"></div>
+      <div className="background-glow glow-three"></div>
+
+      {/* ==============================
+          SIDEBAR
+      ============================== */}
+
+      <aside className="sidebar">
+
+        <div
+          className="brand"
+          onClick={() => goToPage("dashboard")}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="brand-logo">
+            EH
           </div>
 
-          {/* MAIN NAVIGATION */}
-          <nav>
+          <div className="brand-name">
+            EMP <span>HUB</span>
+          </div>
+        </div>
 
-            <div
-                className={`nav-item ${
-                    currentPage === "dashboard" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("dashboard");
-                  setShowForm(false);
-                }}
-            >
-              <span>▦</span>
-              Dashboard
+        <nav className="navigation">
+
+          <button
+            className={`nav-item ${
+              currentPage === "dashboard"
+                ? "active"
+                : ""
+            }`}
+            onClick={() => goToPage("dashboard")}
+          >
+            <span className="nav-icon">▦</span>
+            <span>Dashboard</span>
+          </button>
+
+          <button
+            className={`nav-item ${
+              currentPage === "employees"
+                ? "active"
+                : ""
+            }`}
+            onClick={() => goToPage("employees")}
+          >
+            <span className="nav-icon">♟</span>
+            <span>Employees</span>
+          </button>
+
+          <button
+            className={`nav-item ${
+              currentPage === "departments"
+                ? "active"
+                : ""
+            }`}
+            onClick={() => goToPage("departments")}
+          >
+            <span className="nav-icon">▦</span>
+            <span>Departments</span>
+          </button>
+
+          <button
+            className={`nav-item ${
+              currentPage === "reports"
+                ? "active"
+                : ""
+            }`}
+            onClick={() => goToPage("reports")}
+          >
+            <span className="nav-icon">▥</span>
+            <span>Reports</span>
+          </button>
+
+        </nav>
+
+        <div className="sidebar-bottom">
+
+          <button
+            className={`nav-item settings ${
+              currentPage === "settings"
+                ? "active"
+                : ""
+            }`}
+            onClick={() => goToPage("settings")}
+          >
+            <span className="nav-icon">⚙</span>
+            <span>Settings</span>
+          </button>
+
+          <div className="admin-section">
+
+            <div className="admin-avatar">
+              A
             </div>
 
-            <div
-                className={`nav-item ${
-                    currentPage === "employees" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("employees");
-                  setShowForm(false);
-                }}
-            >
-              <span>👥</span>
-              Employees
+            <div className="admin-info">
+
+              <div className="admin-name">
+                Admin
+              </div>
+
+              <div className="admin-role">
+                Administrator
+              </div>
+
             </div>
 
-            <div
-                className={`nav-item ${
-                    currentPage === "departments" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("departments");
-                  setShowForm(false);
-                }}
-            >
-              <span>🏢</span>
-              Departments
-            </div>
+          </div>
 
-            <div
-                className={`nav-item ${
-                    currentPage === "reports" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("reports");
-                  setShowForm(false);
-                }}
-            >
-              <span>📊</span>
-              Reports
-            </div>
+        </div>
 
-          </nav>
+      </aside>
 
-          {/* BOTTOM NAVIGATION */}
-          <div className="sidebar-bottom">
+      {/* ==============================
+          MAIN CONTENT
+      ============================== */}
 
-            <div
-                className={`nav-item ${
-                    currentPage === "settings" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("settings");
-                  setShowForm(false);
-                }}
-            >
-              <span>⚙️</span>
-              Settings
-            </div>
+      <main className="main-content">
 
-            <div className="profile">
-              <div className="profile-avatar">A</div>
+        {/* TOP HEADER */}
+
+        <header className="top-header">
+
+          <div></div>
+
+          <div className="notification">
+            🔔
+            <span></span>
+          </div>
+
+        </header>
+
+        {/* ==============================
+            DASHBOARD
+        ============================== */}
+
+        {currentPage === "dashboard" && (
+          <>
+
+            {/* STAT CARDS */}
+
+            <section className="stats-grid">
+
+              <div className="stat-card employee-card">
+
+                <div className="stat-icon">
+                  👥
+                </div>
+
+                <div className="stat-content">
+
+                  <div className="stat-title">
+                    Total<br />
+                    Employees
+                  </div>
+
+                  <div className="stat-value">
+                    {employees.length}
+                  </div>
+
+                  <div className="stat-description">
+                    ↑ {employees.length} Active
+                    <br />
+                    employees
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="stat-card department-card">
+
+                <div className="stat-icon">
+                  ▦
+                </div>
+
+                <div className="stat-content">
+
+                  <div className="stat-title">
+                    Departments
+                  </div>
+
+                  <div className="stat-value">
+                    {departments.length}
+                  </div>
+
+                  <div className="stat-description">
+                    Organization
+                    <br />
+                    units
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="stat-card salary-card">
+
+                <div className="stat-icon">
+                  💰
+                </div>
+
+                <div className="stat-content">
+
+                  <div className="stat-title">
+                    Average Salary
+                  </div>
+
+                  <div className="stat-value salary-value">
+                    ₹{" "}
+                    {Math.round(
+                      averageSalary
+                    ).toLocaleString("en-IN")}
+                  </div>
+
+                  <div className="stat-description">
+                    Across
+                    <br />
+                    employees
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="stat-card status-card">
+
+                <div className="stat-icon">
+                  📈
+                </div>
+
+                <div className="stat-content">
+
+                  <div className="stat-title">
+                    System Status
+                  </div>
+
+                  <div className="stat-value status-value">
+                    Active
+                  </div>
+
+                  <div className="stat-description">
+                    ● All systems
+                    <br />
+                    running
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+            <EmployeePanel
+              employees={filteredEmployees}
+              search={search}
+              setSearch={setSearch}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+
+          </>
+        )}
+
+        {/* ==============================
+            EMPLOYEES PAGE
+        ============================== */}
+
+        {currentPage === "employees" && (
+          <>
+
+            <div className="page-heading">
 
               <div>
-                <strong>Admin</strong>
-                <small>Administrator</small>
+                <h1>Employees</h1>
+
+                <p>
+                  View and manage your team members.
+                </p>
               </div>
+
+              <button
+                className="add-employee-button"
+                onClick={handleAddEmployee}
+              >
+                + Add Employee
+              </button>
+
             </div>
 
-          </div>
-        </aside>
+            <EmployeePanel
+              employees={filteredEmployees}
+              search={search}
+              setSearch={setSearch}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
 
+          </>
+        )}
 
-        {/* ================= MAIN CONTENT ================= */}
-        <main className="main-content">
+        {/* ==============================
+            DEPARTMENTS PAGE
+        ============================== */}
 
-          {/* HEADER */}
-          <header className="topbar">
+        {currentPage === "departments" && (
+          <section className="employee-panel">
 
-            <div>
-              <h1>{pageInfo[currentPage].title}</h1>
-              <p>{pageInfo[currentPage].subtitle}</p>
+            <div className="employee-header">
+
+              <div>
+                <h1>Departments</h1>
+
+                <p>
+                  Employees grouped by department.
+                </p>
+              </div>
+
             </div>
 
-            {/* ADD EMPLOYEE BUTTON */}
-            {(currentPage === "dashboard" ||
-                currentPage === "employees") && (
-                <button
-                    className="add-button"
-                    onClick={handleAddEmployee}
-                >
-                  <span>+</span>
-                  Add Employee
-                </button>
-            )}
+            <div className="department-grid">
 
-          </header>
+              {departments.length === 0 ? (
 
+                <div className="empty-state">
 
-          {/* ================================================= */}
-          {/* DASHBOARD PAGE */}
-          {/* ================================================= */}
-
-          {currentPage === "dashboard" && (
-              <>
-                {/* STATISTICS */}
-                <section className="stats">
-
-                  <div className="stat-card">
-                    <div className="stat-icon blue">
-                      👥
-                    </div>
-
-                    <div>
-                      <p>Total Employees</p>
-                      <h2>{employees.length}</h2>
-
-                      <span className="growth">
-                    ↑ Active employees
-                  </span>
+                  <div className="empty-icon-wrapper">
+                    <div className="empty-icon">
+                      ♙
                     </div>
                   </div>
 
+                  <h2>
+                    No departments found
+                  </h2>
 
-                  <div className="stat-card">
-                    <div className="stat-icon purple">
-                      🏢
-                    </div>
-
-                    <div>
-                      <p>Departments</p>
-
-                      <h2>{departments.length}</h2>
-
-                      <span className="growth">
-                    Organization units
-                  </span>
-                    </div>
-                  </div>
-
-
-                  <div className="stat-card">
-                    <div className="stat-icon green">
-                      💰
-                    </div>
-
-                    <div>
-                      <p>Average Salary</p>
-
-                      <h2>
-                        ₹ {averageSalary.toLocaleString()}
-                      </h2>
-
-                      <span className="growth">
-                    Across employees
-                  </span>
-                    </div>
-                  </div>
-
-
-                  <div className="stat-card">
-                    <div className="stat-icon orange">
-                      📈
-                    </div>
-
-                    <div>
-                      <p>System Status</p>
-
-                      <h2>Active</h2>
-
-                      <span className="growth">
-                    ● All systems running
-                  </span>
-                    </div>
-                  </div>
-
-                </section>
-
-
-                {/* DASHBOARD EMPLOYEE SECTION */}
-                <section className="employee-section">
-
-                  <div className="section-header">
-
-                    <div>
-                      <h2>Employees</h2>
-                      <p>
-                        View and manage your team members.
-                      </p>
-                    </div>
-
-                    <div className="search-box">
-                      🔍
-
-                      <input
-                          type="text"
-                          placeholder="Search employees..."
-                          value={search}
-                          onChange={(e) =>
-                              setSearch(e.target.value)
-                          }
-                      />
-                    </div>
-
-                  </div>
-
-
-                  {/* TABLE */}
-                  <EmployeeTable
-                      employees={filteredEmployees}
-                      handleEdit={handleEdit}
-                      handleDelete={handleDelete}
-                  />
-
-                </section>
-              </>
-          )}
-
-
-          {/* ================================================= */}
-          {/* EMPLOYEES PAGE */}
-          {/* ================================================= */}
-
-          {currentPage === "employees" && (
-              <section className="employee-section">
-
-                <div className="section-header">
-
-                  <div>
-                    <h2>All Employees</h2>
-                    <p>
-                      View, add, edit and delete employees.
-                    </p>
-                  </div>
-
-                  <div className="search-box">
-                    🔍
-
-                    <input
-                        type="text"
-                        placeholder="Search employees..."
-                        value={search}
-                        onChange={(e) =>
-                            setSearch(e.target.value)
-                        }
-                    />
-                  </div>
+                  <p>
+                    Add employees with departments
+                    to see them here.
+                  </p>
 
                 </div>
 
-                <EmployeeTable
-                    employees={filteredEmployees}
-                    handleEdit={handleEdit}
-                    handleDelete={handleDelete}
-                />
+              ) : (
 
-              </section>
-          )}
+                departments.map((department) => {
 
+                  const departmentEmployees =
+                    employees.filter(
+                      (employee) =>
+                        employee.department ===
+                        department
+                    );
 
-          {/* ================================================= */}
-          {/* DEPARTMENTS PAGE */}
-          {/* ================================================= */}
+                  return (
+                    <div
+                      className="department-box"
+                      key={department}
+                    >
 
-          {currentPage === "departments" && (
-              <section className="employee-section">
+                      <div className="department-box-icon">
+                        ▦
+                      </div>
 
-                <div className="section-header">
-                  <div>
-                    <h2>Departments</h2>
-                    <p>
-                      Employees grouped by department.
-                    </p>
-                  </div>
-                </div>
-
-
-                <div className="department-grid">
-
-                  {departments.length === 0 ? (
-                      <div className="empty">
-                        <div>🏢</div>
-
-                        <h3>No departments found</h3>
+                      <div>
+                        <h3>
+                          {department}
+                        </h3>
 
                         <p>
-                          Add employees with departments to
-                          see them here.
+                          {
+                            departmentEmployees.length
+                          }{" "}
+                          employee
+                          {departmentEmployees.length !==
+                          1
+                            ? "s"
+                            : ""}
                         </p>
                       </div>
-                  ) : (
-                      departments.map((department) => {
 
-                        const departmentEmployees =
-                            employees.filter(
-                                (employee) =>
-                                    employee.department ===
-                                    department
-                            );
+                    </div>
+                  );
+                })
 
-                        return (
-                            <div
-                                className="department-card"
-                                key={department}
-                            >
+              )}
 
-                              <div className="department-icon">
-                                🏢
-                              </div>
+            </div>
 
-                              <div>
-                                <h3>{department}</h3>
+          </section>
+        )}
 
-                                <p>
-                                  {departmentEmployees.length}{" "}
-                                  employee
-                                  {departmentEmployees.length !== 1
-                                      ? "s"
-                                      : ""}
-                                </p>
-                              </div>
+        {/* ==============================
+            REPORTS PAGE
+        ============================== */}
 
-                            </div>
-                        );
-                      })
-                  )}
+        {currentPage === "reports" && (
+          <section className="employee-panel">
 
+            <div className="employee-header">
+
+              <div>
+                <h1>Reports</h1>
+
+                <p>
+                  Summary of your employee data.
+                </p>
+              </div>
+
+            </div>
+
+            <section className="stats-grid">
+
+              <div className="stat-card employee-card">
+
+                <div className="stat-icon">
+                  👥
                 </div>
 
-              </section>
-          )}
+                <div className="stat-content">
 
+                  <div className="stat-title">
+                    Total Employees
+                  </div>
 
-          {/* ================================================= */}
-          {/* REPORTS PAGE */}
-          {/* ================================================= */}
-
-          {currentPage === "reports" && (
-              <section className="employee-section">
-
-                <div className="section-header">
-
-                  <div>
-                    <h2>Employee Reports</h2>
-                    <p>
-                      Summary of your employee data.
-                    </p>
+                  <div className="stat-value">
+                    {employees.length}
                   </div>
 
                 </div>
 
+              </div>
 
-                <div className="stats">
+              <div className="stat-card department-card">
 
-                  <div className="stat-card">
-                    <div className="stat-icon blue">
-                      👥
-                    </div>
+                <div className="stat-icon">
+                  ▦
+                </div>
 
-                    <div>
-                      <p>Total Employees</p>
-                      <h2>{employees.length}</h2>
-                    </div>
+                <div className="stat-content">
+
+                  <div className="stat-title">
+                    Departments
                   </div>
 
-
-                  <div className="stat-card">
-                    <div className="stat-icon purple">
-                      🏢
-                    </div>
-
-                    <div>
-                      <p>Total Departments</p>
-                      <h2>{departments.length}</h2>
-                    </div>
-                  </div>
-
-
-                  <div className="stat-card">
-                    <div className="stat-icon green">
-                      💰
-                    </div>
-
-                    <div>
-                      <p>Total Salary</p>
-
-                      <h2>
-                        ₹{" "}
-                        {employees
-                            .reduce(
-                                (total, employee) =>
-                                    total +
-                                    Number(employee.salary || 0),
-                                0
-                            )
-                            .toLocaleString()}
-                      </h2>
-                    </div>
-                  </div>
-
-
-                  <div className="stat-card">
-                    <div className="stat-icon orange">
-                      📈
-                    </div>
-
-                    <div>
-                      <p>Average Salary</p>
-
-                      <h2>
-                        ₹{" "}
-                        {averageSalary.toLocaleString()}
-                      </h2>
-                    </div>
+                  <div className="stat-value">
+                    {departments.length}
                   </div>
 
                 </div>
 
-              </section>
-          )}
+              </div>
 
+              <div className="stat-card salary-card">
 
-          {/* ================================================= */}
-          {/* SETTINGS PAGE */}
-          {/* ================================================= */}
+                <div className="stat-icon">
+                  💰
+                </div>
 
-          {currentPage === "settings" && (
-              <section className="employee-section">
+                <div className="stat-content">
 
-                <div className="section-header">
+                  <div className="stat-title">
+                    Total Salary
+                  </div>
 
-                  <div>
-                    <h2>Settings</h2>
-                    <p>
-                      Application and administrator settings.
-                    </p>
+                  <div className="stat-value salary-value">
+                    ₹{" "}
+                    {totalSalary.toLocaleString(
+                      "en-IN"
+                    )}
                   </div>
 
                 </div>
 
+              </div>
 
-                <div className="settings-card">
+              <div className="stat-card status-card">
 
-                  <div className="setting-row">
+                <div className="stat-icon">
+                  📈
+                </div>
 
-                    <div>
-                      <strong>Application</strong>
+                <div className="stat-content">
 
-                      <p>
-                        EmployEase Employee Management
-                      </p>
-                    </div>
+                  <div className="stat-title">
+                    Average Salary
+                  </div>
 
-                    <span className="status">
-                  <span className="status-dot"></span>
-                  Active
+                  <div className="stat-value">
+                    ₹{" "}
+                    {Math.round(
+                      averageSalary
+                    ).toLocaleString("en-IN")}
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          </section>
+        )}
+
+        {/* ==============================
+            SETTINGS PAGE
+        ============================== */}
+
+        {currentPage === "settings" && (
+          <section className="employee-panel">
+
+            <div className="employee-header">
+
+              <div>
+                <h1>Settings</h1>
+
+                <p>
+                  Application and administrator
+                  settings.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="settings-list">
+
+              <div className="setting-row">
+
+                <div>
+                  <strong>
+                    Application
+                  </strong>
+
+                  <p>
+                    EmployEase Employee
+                    Management
+                  </p>
+                </div>
+
+                <span className="status-badge">
+                  ● Active
                 </span>
 
-                  </div>
+              </div>
 
+              <div className="setting-row">
 
-                  <div className="setting-row">
+                <div>
+                  <strong>
+                    Backend API
+                  </strong>
 
-                    <div>
-                      <strong>Backend API</strong>
+                  <p>
+                    Render Production API
+                  </p>
+                </div>
 
-                      <p>
-                        http://localhost:8080
-                      </p>
-                    </div>
-
-                    <span className="status">
-                  <span className="status-dot"></span>
-                  Connected
+                <span className="status-badge">
+                  ● Connected
                 </span>
 
-                  </div>
+              </div>
 
+              <div className="setting-row">
 
-                  <div className="setting-row">
+                <div>
+                  <strong>
+                    Administrator
+                  </strong>
 
-                    <div>
-                      <strong>Administrator</strong>
+                  <p>
+                    Admin
+                  </p>
+                </div>
 
-                      <p>
-                        Admin
-                      </p>
-                    </div>
+              </div>
 
-                  </div>
+            </div>
+
+          </section>
+        )}
+
+        {/* ==============================
+            ADD / EDIT FORM
+        ============================== */}
+
+        {showForm && (
+          <section className="form-card">
+
+            <div className="form-header">
+
+              <div>
+
+                <h2>
+                  {editingEmployeeId !== null
+                    ? "Edit Employee"
+                    : "Add New Employee"}
+                </h2>
+
+                <p>
+                  {editingEmployeeId !== null
+                    ? "Update employee information below."
+                    : "Enter employee information below."}
+                </p>
+
+              </div>
+
+              <button
+                className="close-button"
+                onClick={handleCloseForm}
+              >
+                ✕
+              </button>
+
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="form-grid">
+
+                <div className="form-group">
+
+                  <label>
+                    Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter employee name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
 
                 </div>
 
-              </section>
-          )}
+                <div className="form-group">
 
+                  <label>
+                    Email
+                  </label>
 
-          {/* ================================================= */}
-          {/* ADD / EDIT EMPLOYEE FORM */}
-          {/* ================================================= */}
-
-          {showForm && (
-              <section className="form-card">
-
-                <div className="form-header">
-
-                  <div>
-
-                    <h2>
-                      {editingEmployeeId !== null
-                          ? "Edit Employee"
-                          : "Add New Employee"}
-                    </h2>
-
-                    <p>
-                      {editingEmployeeId !== null
-                          ? "Update employee information below."
-                          : "Enter employee information below."}
-                    </p>
-
-                  </div>
-
-                  <button
-                      className="close-button"
-                      onClick={handleCloseForm}
-                  >
-                    ✕
-                  </button>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
 
                 </div>
 
+                <div className="form-group">
 
-                <form onSubmit={handleSubmit}>
+                  <label>
+                    Phone
+                  </label>
 
-                  <div className="form-grid">
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="Enter phone number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                  />
 
-                    <div className="form-group">
-                      <label>Name</label>
+                </div>
 
-                      <input
-                          type="text"
-                          name="name"
-                          placeholder="Enter employee name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                      />
-                    </div>
+                <div className="form-group">
 
+                  <label>
+                    Department
+                  </label>
 
-                    <div className="form-group">
-                      <label>Email</label>
+                  <input
+                    type="text"
+                    name="department"
+                    placeholder="e.g. Engineering"
+                    value={formData.department}
+                    onChange={handleChange}
+                    required
+                  />
 
-                      <input
-                          type="email"
-                          name="email"
-                          placeholder="Enter email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                      />
-                    </div>
+                </div>
 
+                <div className="form-group">
 
-                    <div className="form-group">
-                      <label>Phone</label>
+                  <label>
+                    Salary
+                  </label>
 
-                      <input
-                          type="text"
-                          name="phone"
-                          placeholder="Enter phone number"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          required
-                      />
-                    </div>
+                  <input
+                    type="number"
+                    name="salary"
+                    placeholder="Enter salary"
+                    value={formData.salary}
+                    onChange={handleChange}
+                    required
+                  />
 
+                </div>
 
-                    <div className="form-group">
-                      <label>Department</label>
+              </div>
 
-                      <input
-                          type="text"
-                          name="department"
-                          placeholder="e.g. Engineering"
-                          value={formData.department}
-                          onChange={handleChange}
-                          required
-                      />
-                    </div>
+              <div className="form-actions">
 
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={handleCloseForm}
+                >
+                  Cancel
+                </button>
 
-                    <div className="form-group">
-                      <label>Salary</label>
+                <button
+                  type="submit"
+                  className="save-button"
+                >
+                  {editingEmployeeId !== null
+                    ? "✓ Update Employee"
+                    : "+ Add Employee"}
+                </button>
 
-                      <input
-                          type="number"
-                          name="salary"
-                          placeholder="Enter salary"
-                          value={formData.salary}
-                          onChange={handleChange}
-                          required
-                      />
-                    </div>
+              </div>
 
-                  </div>
+            </form>
 
+          </section>
+        )}
 
-                  <div className="form-actions">
+      </main>
 
-                    <button
-                        type="button"
-                        className="cancel-button"
-                        onClick={handleCloseForm}
-                    >
-                      Cancel
-                    </button>
-
-                    <button
-                        type="submit"
-                        className="save-button"
-                    >
-                      {editingEmployeeId !== null
-                          ? "✓ Update Employee"
-                          : "+ Add Employee"}
-                    </button>
-
-                  </div>
-
-                </form>
-
-              </section>
-          )}
-
-        </main>
-      </div>
+    </div>
   );
 }
 
 
-/* ================================================= */
-/* EMPLOYEE TABLE COMPONENT */
-/* ================================================= */
+/* =================================================
+   EMPLOYEE PANEL
+================================================= */
 
-function EmployeeTable({
-                         employees,
-                         handleEdit,
-                         handleDelete,
-                       }) {
+function EmployeePanel({
+  employees,
+  search,
+  setSearch,
+  handleEdit,
+  handleDelete,
+}) {
   return (
-      <div className="table-container">
+    <section className="employee-panel">
 
-        <table>
+      <div className="employee-header">
 
-          <thead>
+        <div>
+          <h1>Employees</h1>
 
-          <tr>
-            <th>EMPLOYEE</th>
-            <th>CONTACT</th>
-            <th>DEPARTMENT</th>
-            <th>SALARY</th>
-            <th>STATUS</th>
-            <th>ACTION</th>
-          </tr>
+          <p>
+            View and manage your team members.
+          </p>
+        </div>
 
-          </thead>
+        <div className="search-box">
 
+          <span className="search-icon">
+            ⌕
+          </span>
 
-          <tbody>
+          <input
+            type="text"
+            placeholder="Search employees..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+          />
 
-          {employees.map((employee) => (
+        </div>
 
-              <tr key={employee.id}>
+      </div>
 
-                <td>
+      {employees.length > 0 ? (
 
-                  <div className="employee-info">
+        <>
 
-                    <div className="avatar">
-                      {employee.name
-                          ?.charAt(0)
-                          .toUpperCase()}
-                    </div>
+          <div className="table-header">
 
-                    <div>
-                      <strong>{employee.name}</strong>
+            <div>EMPLOYEE</div>
+            <div>CONTACT</div>
+            <div>DEPARTMENT</div>
+            <div>SALARY</div>
+            <div>STATUS</div>
+            <div>ACTION</div>
 
-                      <small>
-                        ID #{employee.id}
-                      </small>
-                    </div>
+          </div>
+
+          <div className="employee-list">
+
+            {employees.map((employee) => (
+
+              <div
+                className="employee-row"
+                key={employee.id}
+              >
+
+                <div className="employee-name-cell">
+
+                  <div className="employee-avatar">
+                    {employee.name
+                      ?.charAt(0)
+                      .toUpperCase()}
+                  </div>
+
+                  <div>
+
+                    <span>
+                      {employee.name}
+                    </span>
+
+                    <small>
+                      ID #{employee.id}
+                    </small>
 
                   </div>
 
-                </td>
+                </div>
 
-
-                <td>
-
-                  <div className="contact">
+                <div className="contact-cell">
 
                   <span>
                     {employee.email}
                   </span>
 
-                    <small>
-                      {employee.phone}
-                    </small>
+                  <small>
+                    {employee.phone}
+                  </small>
 
-                  </div>
+                </div>
 
-                </td>
+                <div>
+                  {employee.department || "-"}
+                </div>
 
+                <div>
+                  ₹{" "}
+                  {Number(
+                    employee.salary || 0
+                  ).toLocaleString("en-IN")}
+                </div>
 
-                <td>
+                <div>
 
-                <span className="department">
-                  {employee.department}
-                </span>
+                  <span className="status-badge">
+                    ● Active
+                  </span>
 
-                </td>
+                </div>
 
+                <div className="action-buttons">
 
-                <td>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleEdit(employee)
+                    }
+                    title="Edit employee"
+                  >
+                    ✏
+                  </button>
 
-                  <strong>
-                    ₹{" "}
-                    {Number(
-                        employee.salary || 0
-                    ).toLocaleString()}
-                  </strong>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleDelete(employee.id)
+                    }
+                    title="Delete employee"
+                  >
+                    🗑
+                  </button>
 
-                </td>
+                </div>
 
+              </div>
 
-                <td>
+            ))}
 
-                <span className="status">
+          </div>
 
-                  <span className="status-dot"></span>
+        </>
 
-                  Active
+      ) : (
 
-                </span>
+        <div className="empty-state">
 
-                </td>
+          <div className="empty-icon-wrapper">
 
-
-                <td>
-
-                  <div className="actions">
-
-                    <button
-                        type="button"
-                        className="edit-btn"
-                        onClick={() =>
-                            handleEdit(employee)
-                        }
-                    >
-                      ✏️
-                    </button>
-
-
-                    <button
-                        type="button"
-                        className="delete-btn"
-                        onClick={() =>
-                            handleDelete(employee.id)
-                        }
-                    >
-                      🗑️
-                    </button>
-
-                  </div>
-
-                </td>
-
-              </tr>
-
-          ))}
-
-          </tbody>
-
-        </table>
-
-
-        {employees.length === 0 && (
-
-            <div className="empty">
-
-              <div>👤</div>
-
-              <h3>No employees found</h3>
-
-              <p>
-                Add an employee or try another search.
-              </p>
-
+            <div className="empty-icon">
+              ♙
             </div>
 
-        )}
+          </div>
 
-      </div>
+          <h2>
+            No employees found
+          </h2>
+
+          <p>
+            Add an employee or try another search.
+          </p>
+
+        </div>
+
+      )}
+
+    </section>
   );
 }
 
-
 export default App;
+```
