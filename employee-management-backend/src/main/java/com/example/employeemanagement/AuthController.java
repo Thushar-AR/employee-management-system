@@ -33,8 +33,29 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            User user = authService.login(
+                    request.email(),
+                    request.password()
+            );
+
+            return ResponseEntity.ok(user);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public record SignupRequest(
             String name,
+            String email,
+            String password
+    ) {
+    }
+
+    public record LoginRequest(
             String email,
             String password
     ) {
