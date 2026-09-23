@@ -261,7 +261,7 @@ function App() {
               style={{ cursor: "pointer" }}
           >
             <div className="logo-icon">EH</div>
-            <span>EmpHub</span>
+            <span>EMP HUB</span>
           </div>
 
           {/* MAIN NAVIGATION */}
