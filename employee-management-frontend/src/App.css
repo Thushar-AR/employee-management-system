@@ -40,8 +40,40 @@ input {
   bottom: 0;
   left: 0;
 }
-
 .logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #00a4ef 0%,
+    #7b2ff7 40%,
+    #f72585 70%,
+    #ffb703 100%
+  );
+
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(123, 47, 247, 0.3);
+}
+
+.logo span {
+  color: #ffffff !important;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/*.logo-icon {
   width: 44px;
   height: 44px;
   border-radius: 12px;
@@ -71,7 +103,7 @@ input {
   color: #1f2937 !important;
   font-size: 20px;
   font-weight: 700;
-}
+} *\
 
 nav {
   display: flex;
