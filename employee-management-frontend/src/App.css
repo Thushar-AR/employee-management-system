@@ -7,11 +7,11 @@ body {
   background: #f5f7fb;
   color: #172033;
   font-family:
-          Inter,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 button,
@@ -19,14 +19,18 @@ input {
   font-family: inherit;
 }
 
-/* Dashboard */
+/* ================================
+   DASHBOARD
+================================ */
 
 .dashboard {
   min-height: 100vh;
   display: flex;
 }
 
-/* Sidebar */
+/* ================================
+   SIDEBAR
+================================ */
 
 .sidebar {
   width: 250px;
@@ -40,6 +44,16 @@ input {
   bottom: 0;
   left: 0;
 }
+
+/* Employee Hub Logo */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
 .logo-icon {
   width: 44px;
   height: 44px;
@@ -54,6 +68,7 @@ input {
   );
 
   color: #ffffff !important;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +78,10 @@ input {
   letter-spacing: -0.5px;
 
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  box-shadow: 0 4px 14px rgba(123, 47, 247, 0.3);
+
+  box-shadow:
+    0 4px 14px rgba(123, 47, 247, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .logo span {
@@ -73,37 +91,9 @@ input {
   letter-spacing: -0.5px;
 }
 
-/*.logo-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-
-  background: linear-gradient(
-    135deg,
-    #00a4ef 0%,
-    #7b2ff7 40%,
-    #f72585 70%,
-    #ffb703 100%
-  );
-
-  color: #ffffff !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  box-shadow: 0 4px 14px rgba(123, 47, 247, 0.3);
-}
-
-.logo span {
-  color: #1f2937 !important;
-  font-size: 20px;
-  font-weight: 700;
-} *\
+/* ================================
+   NAVIGATION
+================================ */
 
 nav {
   display: flex;
@@ -137,6 +127,10 @@ nav {
   background: #4f46e5;
   color: white;
 }
+
+/* ================================
+   SIDEBAR PROFILE
+================================ */
 
 .sidebar-bottom {
   margin-top: auto;
@@ -172,7 +166,9 @@ nav {
   font-size: 11px;
 }
 
-/* Main */
+/* ================================
+   MAIN CONTENT
+================================ */
 
 .main-content {
   margin-left: 250px;
@@ -180,7 +176,9 @@ nav {
   padding: 35px 42px;
 }
 
-/* Header */
+/* ================================
+   HEADER
+================================ */
 
 .topbar {
   display: flex;
@@ -224,7 +222,9 @@ nav {
   box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
 }
 
-/* Stats */
+/* ================================
+   STATS
+================================ */
 
 .stats {
   display: grid;
@@ -289,7 +289,9 @@ nav {
   font-size: 10px;
 }
 
-/* Employee section */
+/* ================================
+   EMPLOYEE SECTION
+================================ */
 
 .employee-section {
   background: white;
@@ -318,6 +320,10 @@ nav {
   font-size: 12px;
 }
 
+/* ================================
+   SEARCH
+================================ */
+
 .search-box {
   width: 250px;
   height: 40px;
@@ -337,7 +343,9 @@ nav {
   font-size: 13px;
 }
 
-/* Table */
+/* ================================
+   TABLE
+================================ */
 
 .table-container {
   overflow-x: auto;
@@ -372,7 +380,9 @@ tr:hover {
   background: #fafbff;
 }
 
-/* Employee */
+/* ================================
+   EMPLOYEE
+================================ */
 
 .employee-info {
   display: flex;
@@ -441,6 +451,10 @@ tr:hover {
   margin-right: 5px;
 }
 
+/* ================================
+   ACTIONS
+================================ */
+
 .actions {
   display: flex;
   gap: 7px;
@@ -468,7 +482,9 @@ tr:hover {
   transform: scale(1.08);
 }
 
-/* Empty */
+/* ================================
+   EMPTY STATE
+================================ */
 
 .empty {
   padding: 60px;
@@ -487,51 +503,6 @@ tr:hover {
 
 .empty p {
   font-size: 13px;
-}
-
-/* Responsive */
-
-@media (max-width: 1000px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .sidebar {
-    width: 210px;
-  }
-
-  .main-content {
-    margin-left: 210px;
-    width: calc(100% - 210px);
-    padding: 25px;
-  }
-}
-
-@media (max-width: 700px) {
-  .sidebar {
-    display: none;
-  }
-
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    padding: 20px;
-  }
-
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .topbar,
-  .section-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .search-box {
-    width: 100%;
-  }
 }
 
 /* ================================
@@ -677,8 +648,52 @@ tr:hover {
   box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
 }
 
-/* Mobile */
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 1000px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar {
+    width: 210px;
+  }
+
+  .main-content {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+    padding: 25px;
+  }
+}
+
 @media (max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar,
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
