@@ -712,14 +712,20 @@ tr:hover {
   }
 }
 
+/* ADD EMPLOYEE POPUP */
+.form-card {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9999 !important;
 
+  width: 700px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
 
-
-
-
-
-
-
-
-
-
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+}
