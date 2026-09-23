@@ -41,31 +41,31 @@ input {
   left: 0;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .logo-icon {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
-  color: white;
+  background: linear-gradient(
+    135deg,
+    #00a4ef 0%,
+    #7f3cff 35%,
+    #ff4b91 65%,
+    #ffb900 100%
+  );
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -1px;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 14px rgba(127, 60, 255, 0.25);
 }
 
 .logo span {
   font-size: 20px;
   font-weight: 700;
-  color: #172033;
+  color: #242424;
   letter-spacing: -0.5px;
 }
 
